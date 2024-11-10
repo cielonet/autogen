@@ -7,15 +7,26 @@ services:
       dockerfile: Dockerfile
 
     volumes:
-      # Forwards the local Docker socket to the container.
-      - /var/run/docker.sock:/var/run/docker-host.sock 
+      # Forwards the local 'rootless' Docker socket to the container.
+      - /run/user/1000/docker.sock:/var/run/docker.sock
       # Update this to wherever you want VS Code to mount the folder of your project
       - ../..:/workspaces:cached
 
     # Overrides default command so things don't shut down after the process ends.
     entrypoint: /usr/local/share/docker-init.sh
     command: sleep infinity 
-
+    privileged: true
+    # Needed for Fedora
+    security_opt:
+      - label=disable
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0', '1']
+            capabilities: [gpu]
     # Uncomment the next four lines if you will use a ptrace-based debuggers like C++, Go, and Rust.
     # cap_add:
     #  - SYS_PTRACE

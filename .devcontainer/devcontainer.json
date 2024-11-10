@@ -5,6 +5,7 @@
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "devcontainer",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"hostRequirements": {"gpu":true},
 
 	// Use this environment variable if you need to bind mount your local source code into a new container.
 	"remoteEnv": {
@@ -30,6 +31,7 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root",
+	
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -40,6 +42,7 @@
 				"ms-dotnettools.vscodeintellicode-csharp",
 				"github.vscode-github-actions"
 			]
+			
 		}
 	}
 }
