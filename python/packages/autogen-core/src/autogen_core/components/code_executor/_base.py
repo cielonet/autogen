@@ -38,8 +38,8 @@ class CodeBlock:
                 # For multi-line code blocks, maintain indentation but clean up unnecessary trailing spaces
                 self.code = "\n".join(line.rstrip() for line in code_lines)
         
-        # Update the language field using the lang_to_cmd function
-        self.language = self.lang_to_cmd(self.code)
+        # Update the language field using the infer_lang function
+        self.language = self.infer_lang(self.code)
 
     def format_python_code(self, code: str) -> str:
         """Format the Python code using a linter (e.g., black or autopep8)."""
@@ -60,7 +60,8 @@ class CodeBlock:
             print(f"Error formatting Python code: {e.stderr.decode()}")
             return code  # Return the original code if formatting fails
     
-    def lang_to_cmd(self, lang: str) -> str:
+    def infer_lang(self, code: str) -> str:
+        """infer the language for the code."""
         from autogen_ext.models.trained._language_inference import language_model, language_vectorizer
 
         model: MultinomialNB | None = language_model
