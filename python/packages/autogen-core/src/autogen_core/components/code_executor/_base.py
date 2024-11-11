@@ -15,7 +15,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
 
-from autogen_ext.models.trained.language_inference import language_model, language_vectorizer
+from autogen_ext.models.trained._language_inference import language_model, language_vectorizer
 
 model: MultinomialNB = language_model
 vectorizer: TfidfVectorizer = language_vectorizer
