@@ -8,18 +8,9 @@ from typing import List, Protocol, runtime_checkable
 
 from autogen_core.base import CancellationToken
 
-
-
 import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-
-
-from autogen_ext.models.trained._language_inference import language_model, language_vectorizer
-
-model: MultinomialNB = language_model
-vectorizer: TfidfVectorizer = language_vectorizer
-
 
 @dataclass
 class CodeBlock:
@@ -70,6 +61,11 @@ class CodeBlock:
             return code  # Return the original code if formatting fails
     
     def lang_to_cmd(self, lang: str) -> str:
+        from autogen_ext.models.trained._language_inference import language_model, language_vectorizer
+
+        model: MultinomialNB = language_model
+        vectorizer: TfidfVectorizer = language_vectorizer
+
         # Preprocess the input_text using the loaded vectorizer
         input_vector = vectorizer.transform([lang])
 
