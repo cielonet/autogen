@@ -12,6 +12,15 @@ import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
+
+from autogen_agentchat import EVENT_LOGGER_NAME
+from autogen_agentchat.logging import ConsoleLogHandler
+
+import logging
+logger = logging.getLogger(EVENT_LOGGER_NAME)
+logger.addHandler(ConsoleLogHandler())
+logger.setLevel(logging.INFO)
+
 @dataclass
 class CodeBlock:
     """A code block extracted from an agent message."""
@@ -57,7 +66,7 @@ class CodeBlock:
             )
             return result.stdout.decode().strip()  # Return formatted code
         except subprocess.CalledProcessError as e:
-            print(f"Error formatting Python code: {e.stderr.decode()}")
+            logging.error(f"Error formatting Python code: {e.stderr.decode()}")
             return code  # Return the original code if formatting fails
     
     def infer_lang(self, code: str) -> str:
@@ -71,7 +80,7 @@ class CodeBlock:
             raise FileNotFoundError
         
         # Preprocess the input_text using the loaded vectorizer
-        input_vector = vectorizer.transform([lang])
+        input_vector = vectorizer.transform([code])
 
         # Predict the label using the loaded model
         prediction = model.predict(input_vector)
