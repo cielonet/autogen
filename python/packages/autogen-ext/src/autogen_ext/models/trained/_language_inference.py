@@ -27,8 +27,8 @@ model_filepath = os.path.join(current_dir, 'naive_bayes_model.pkl')
 vectorizer_filepath = os.path.join(current_dir, 'tfidf_vectorizer.pkl')
 
 # DEBUG: Print the paths to check
-print(f"DEBUG: Model filepath: {model_filepath}")
-print(f"DEBUG: Vectorizer filepath: {vectorizer_filepath}")
+logging.debug(f"DEBUG: Model filepath: {model_filepath}")
+logging.debug(f"DEBUG: Vectorizer filepath: {vectorizer_filepath}")
 
 language_model: MultinomialNB = safe_load(model_filepath)
 language_vectorizer: TfidfVectorizer = safe_load(vectorizer_filepath)
