@@ -16,7 +16,7 @@ def safe_load(filepath):
     if os.path.exists(filepath):
         return joblib.load(filepath)
     else:
-        print(f"File not found: {filepath}")
+        logging.critical(f"File not found: {filepath}")
         return None
 
 # Get the directory where the current script is located
@@ -27,8 +27,8 @@ model_filepath = os.path.join(current_dir, 'naive_bayes_model.pkl')
 vectorizer_filepath = os.path.join(current_dir, 'tfidf_vectorizer.pkl')
 
 # DEBUG: Print the paths to check
-logging.debug(f"DEBUG: Model filepath: {model_filepath}")
-logging.debug(f"DEBUG: Vectorizer filepath: {vectorizer_filepath}")
+logging.debug(f"Model filepath: {model_filepath}")
+logging.debug(f"Vectorizer filepath: {vectorizer_filepath}")
 
 language_model: MultinomialNB = safe_load(model_filepath)
 language_vectorizer: TfidfVectorizer = safe_load(vectorizer_filepath)
