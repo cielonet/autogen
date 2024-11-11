@@ -63,9 +63,12 @@ class CodeBlock:
     def lang_to_cmd(self, lang: str) -> str:
         from autogen_ext.models.trained._language_inference import language_model, language_vectorizer
 
-        model: MultinomialNB = language_model
-        vectorizer: TfidfVectorizer = language_vectorizer
+        model: MultinomialNB | None = language_model
+        vectorizer: TfidfVectorizer | None = language_vectorizer
 
+        if (model or vectorizer) is None:
+            raise FileNotFoundError
+        
         # Preprocess the input_text using the loaded vectorizer
         input_vector = vectorizer.transform([lang])
 

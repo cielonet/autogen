@@ -3,6 +3,14 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
+from autogen_agentchat import EVENT_LOGGER_NAME
+from autogen_agentchat.logging import ConsoleLogHandler
+
+import logging
+logger = logging.getLogger(EVENT_LOGGER_NAME)
+logger.addHandler(ConsoleLogHandler())
+logger.setLevel(logging.INFO)
+
 # Function to safely load model or vectorizer
 def safe_load(filepath):
     if os.path.exists(filepath):
@@ -11,10 +19,20 @@ def safe_load(filepath):
         print(f"File not found: {filepath}")
         return None
 
-# Check and load the Naive Bayes model and TF-IDF vectorizer
-language_model: MultinomialNB = safe_load('./naive_bayes_model.pkl')
-language_vectorizer: TfidfVectorizer = safe_load('./tfidf_vectorizer.pkl')
+# Get the directory where the current script is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Construct file paths relative to the current script's directory
+model_filepath = os.path.join(current_dir, 'naive_bayes_model.pkl')
+vectorizer_filepath = os.path.join(current_dir, 'tfidf_vectorizer.pkl')
+
+# DEBUG: Print the paths to check
+print(f"DEBUG: Model filepath: {model_filepath}")
+print(f"DEBUG: Vectorizer filepath: {vectorizer_filepath}")
+
+language_model: MultinomialNB = safe_load(model_filepath)
+language_vectorizer: TfidfVectorizer = safe_load(vectorizer_filepath)
 
 # Optional: You can handle the case where the model or vectorizer is not loaded
 if language_model is None or language_vectorizer is None:
-    print("Model or vectorizer loading failed.")
+    logging.critical("Model or vectorizer loading failed.")
