@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 from typing import Optional
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
 
 # Raises ValueError if the file is not in the workspace
 def get_file_name_from_content(code: str, workspace_path: Path) -> Optional[str]:
@@ -74,6 +76,8 @@ def lang_to_cmd(lang: str) -> str:
         return lang
     if lang in ["shell"]:
         return "sh"
+    if lang in ["markdown"]:
+        return "markdown"
     else:
         raise ValueError(f"Unsupported language: {lang}")
 
@@ -90,17 +94,28 @@ def lang_to_cmd(lang: str) -> str:
 CODE_BLOCK_PATTERN = r"```[ \t]*(\w+)?[ \t]*\r?\n(.*?)\r?\n[ \t]*```"
 
 
-def infer_lang(code: str) -> str:
-    """infer the language for the code.
-    TODO: make it robust.
-    """
-    if code.startswith("python ") or code.startswith("pip") or code.startswith("python3 "):
-        return "sh"
+def infer_lang(self, code: str) -> str:
+    """infer the language for the code."""
+    from autogen_ext.models.trained._language_inference import language_model, language_vectorizer
 
-    # check if code is a valid python code
-    try:
-        compile(code, "test", "exec")
+    model: MultinomialNB | None = language_model
+    vectorizer: TfidfVectorizer | None = language_vectorizer
+
+    if (model or vectorizer) is None:
+        raise FileNotFoundError
+    
+    # Preprocess the input_text using the loaded vectorizer
+    input_vector = vectorizer.transform([code])
+
+    # Predict the label using the loaded model
+    prediction = model.predict(input_vector)
+
+    # Return the predicted label
+    if prediction[0] == 0:
         return "python"
-    except SyntaxError:
-        # not a valid python code
-        return "unknown"
+    elif prediction[0] == 1:
+        return "sh"
+    elif prediction[0] == 2:
+        return "markdown"
+    else:
+        raise ValueError
