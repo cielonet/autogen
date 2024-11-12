@@ -17,7 +17,7 @@ def extract_markdown_code_blocks(markdown_text: str) -> List[CodeBlock]:
 
         # Only append non-empty code content to the list
         if code_content:
-            if language not "markdown":
+            if "markdown" not in language: # ignore executing markdown classified code
                 code_blocks.append(CodeBlock(code=code_content, language=language))
     
     return code_blocks

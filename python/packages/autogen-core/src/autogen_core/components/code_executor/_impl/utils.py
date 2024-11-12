@@ -72,11 +72,14 @@ PYTHON_VARIANTS = ["python", "Python", "py"]
 def lang_to_cmd(lang: str) -> str:
     if lang in PYTHON_VARIANTS:
         return "python"
+    
     if lang.startswith("python") or lang in ["bash", "sh"]:
         return lang
+    
     if lang in ["shell"]:
         return "sh"
-    if lang in ["markdown"]:
+    
+    if lang.startswith("markdown"):
         return "markdown"
     else:
         raise ValueError(f"Unsupported language: {lang}")
