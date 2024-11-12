@@ -86,7 +86,15 @@ class CodeBlock:
         prediction = model.predict(input_vector)
 
         # Return the predicted label
-        return "python" if prediction[0] == 0 else "sh"
+        if prediction[0] == 0:
+            return "python"
+        elif prediction[0] == 1:
+            return "sh"
+        elif prediction[0] == 2:
+            return "markdown"
+        else:
+            raise ValueError
+
 
 @dataclass
 class CodeResult:
@@ -118,7 +126,7 @@ class CodeExecutor(Protocol):
             asyncio.TimeoutError: Code execution timeouts
             asyncio.CancelledError: CancellationToken evoked during execution
         """
-        ...
+        print("WE ARE H")
 
     async def restart(self) -> None:
         """Restart the code executor.
